@@ -15,6 +15,7 @@ import pickBy from 'lodash/pickBy';
 /**
  * Internal dependencies
  */
+import ThemeDetailsComponent from 'components/data/theme-details';
 import Main from 'components/main';
 import HeaderCake from 'components/header-cake';
 import SectionHeader from 'components/section-header';
@@ -398,41 +399,42 @@ const ThemeSheet = React.createClass( {
 		const canonicalUrl = `https://wordpress.com/theme/${ this.props.id }`; // TODO: use getDetailsUrl() When it becomes availavle
 
 		return (
-
-			<Head
-				title= { themeName && decodeEntities( title ) + ' — WordPress.com' }
-				description={ description && decodeEntities( description ) }
-				type={ 'website' }
-				canonicalUrl={ canonicalUrl }
-				image={ this.props.screenshot }>
-				<QueryUserPurchases userId={ this.props.currentUserId } />
-				<Main className="theme__sheet">
-					<PageViewTracker path={ analyticsPath } title={ analyticsPageTitle } />
-						{ this.renderBar() }
-						{ siteID && <QueryCurrentTheme siteId={ siteID } /> }
-					<ThanksModal
-						site={ this.props.selectedSite }
-						source={ 'details' } />
-					{ this.state.showPreview && this.renderPreview() }
-					<HeaderCake className="theme__sheet-action-bar"
-								backHref={ this.props.backPath }
-								backText={ i18n.translate( 'All Themes' ) }>
-						{ this.renderButton() }
-					</HeaderCake>
-					<div className="theme__sheet-columns">
-						<div className="theme__sheet-column-left">
-							<div className="theme__sheet-content">
-								{ this.renderSectionNav( section ) }
-								{ this.renderSectionContent( section ) }
-								<div className="theme__sheet-footer-line"><Gridicon icon="my-sites" /></div>
+			<ThemeDetailsComponent id={ this.props.themeSlug } >
+				<Head
+					title= { themeName && decodeEntities( title ) + ' — WordPress.com' }
+					description={ description && decodeEntities( description ) }
+					type={ 'website' }
+					canonicalUrl={ canonicalUrl }
+					image={ this.props.screenshot }>
+					<QueryUserPurchases userId={ this.props.currentUserId } />
+					<Main className="theme__sheet">
+						<PageViewTracker path={ analyticsPath } title={ analyticsPageTitle } />
+							{ this.renderBar() }
+							{ siteID && <QueryCurrentTheme siteId={ siteID } /> }
+						<ThanksModal
+							site={ this.props.selectedSite }
+							source={ 'details' } />
+						{ this.state.showPreview && this.renderPreview() }
+						<HeaderCake className="theme__sheet-action-bar"
+									backHref={ this.props.backPath }
+									backText={ i18n.translate( 'All Themes' ) }>
+							{ this.renderButton() }
+						</HeaderCake>
+						<div className="theme__sheet-columns">
+							<div className="theme__sheet-column-left">
+								<div className="theme__sheet-content">
+									{ this.renderSectionNav( section ) }
+									{ this.renderSectionContent( section ) }
+									<div className="theme__sheet-footer-line"><Gridicon icon="my-sites" /></div>
+								</div>
+							</div>
+							<div className="theme__sheet-column-right">
+								{ this.renderScreenshot() }
 							</div>
 						</div>
-						<div className="theme__sheet-column-right">
-							{ this.renderScreenshot() }
-						</div>
-					</div>
-				</Main>
-			</Head>
+					</Main>
+				</Head>
+			</ThemeDetailsComponent>
 		);
 	},
 
@@ -501,6 +503,7 @@ export default connect(
 		const currentUserId = getCurrentUserId( state );
 		const isCurrentUserPaid = isUserPaid( state, currentUserId );
 		const section = getParam( state, 'section' );
+		const themeSlug = getParam( state, 'slug' );
 
 		return {
 			selectedSite,
@@ -509,6 +512,7 @@ export default connect(
 			currentUserId,
 			isCurrentUserPaid,
 			section,
+			themeSlug,
 			isLoggedIn: !! currentUserId,
 		};
 	},

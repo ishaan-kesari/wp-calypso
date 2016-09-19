@@ -9,7 +9,6 @@ import startsWith from 'lodash/startsWith';
  * Internal Dependencies
  */
 import ThemeSheetComponent from './main';
-import ThemeDetailsComponent from 'components/data/theme-details';
 import {
 	receiveThemeDetails,
 	receiveThemeDetailsFailure,
@@ -55,19 +54,11 @@ export function fetchThemeDetailsData( context, next ) {
 }
 
 export function details( context, next ) {
-	const { slug } = context.params;
-
 	if ( startsWith( context.prevPath, '/design' ) ) {
 		context.store.dispatch( setBackPath( context.prevPath ) );
 	}
 
-	const ConnectedComponent = ( { themeSlug } ) => (
-		<ThemeDetailsComponent id={ themeSlug } >
-			<ThemeSheetComponent />
-		</ThemeDetailsComponent>
-	);
-
-	context.primary = ConnectedComponent( { themeSlug: slug } );
+	context.primary = <ThemeSheetComponent />;
 	context.secondary = null; // When we're logged in, we need to remove the sidebar.
 	next();
 }
